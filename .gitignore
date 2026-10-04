@@ -1,0 +1,22 @@
+# Environments
+myenv/
+venv/
+env/
+
+# API Keys and Secrets
+.env
+
+# Database
+*.db
+auspex.db
+*.sqlite3
+
+# Python Caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# OS generated files
+.DS_Store
+Thumbs.db
