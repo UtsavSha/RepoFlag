@@ -5,6 +5,8 @@ from app.core.database import get_db
 from app.models import Repository, Scan, ScanStatus, Finding
 from app.services.scan_service import execute_scan_pipeline  # Import the new service
 from app.models import File
+from fastapi.responses import FileResponse
+from app.reports.pdf_generator import generate_scan_pdf
 
 router = APIRouter(prefix="/api/scans", tags=["Scans"])
 
@@ -113,3 +115,24 @@ def get_risk_heatmap(scan_id: int, db: Session = Depends(get_db)):
             "finding_count": db.query(Finding).filter(Finding.file_id == f.id, Finding.scan_id == scan_id).count()
         } for f in files
     ]
+
+
+@router.get("/{scan_id}/report/download")
+def download_scan_report(scan_id: int, db: Session = Depends(get_db)):
+    """
+    Generates and downloads a PDF security report for the scan.
+    """
+    try:
+        pdf_path = generate_scan_pdf(scan_id, db)
+
+        # FileResponse automatically handles downloading the file to the user's browser
+        return FileResponse(
+            path=pdf_path,
+            filename=f"REPOFLAG_Security_Report_{scan_id}.pdf",
+            media_type="application/pdf"
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Failed to generate PDF: {str(e)}")

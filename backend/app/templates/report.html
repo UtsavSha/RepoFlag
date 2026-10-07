@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>REPOFLAG Security Report</title>
+    <style>
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            margin: 40px;
+            color: #333;
+        }
+
+        h1 {
+            color: #1e293b;
+            border-bottom: 2px solid #cbd5e1;
+            padding-bottom: 10px;
+        }
+
+        .summary {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .risk-score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #b91c1c;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            border: 1px solid #cbd5e1;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #1e293b;
+            color: white;
+        }
+
+        .CRITICAL {
+            color: #991b1b;
+            font-weight: bold;
+        }
+
+        .HIGH {
+            color: #c2410c;
+            font-weight: bold;
+        }
+
+        .MEDIUM {
+            color: #b45309;
+            font-weight: bold;
+        }
+
+        .LOW {
+            color: #15803d;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Repoflag Security Scan Report</h1>
+
+    <div class="summary">
+        <h2>Repository: {{ repo_name }}</h2>
+        <p><strong>URL:</strong> {{ repo_url }}</p>
+        <p><strong>Scan Completed:</strong> {{ scan_date }}</p>
+        <p><strong>Total Findings:</strong> {{ total_findings }}</p>
+        <p><strong>Overall Risk Score:</strong> <span class="risk-score">{{ risk_score }} / 100</span></p>
+    </div>
+
+    <h2>Vulnerability Details</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Severity</th>
+                <th>Scanner</th>
+                <th>File</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for finding in findings %}
+            <tr>
+                <td class="{{ finding.severity }}">{{ finding.severity }}</td>
+                <td>{{ finding.scanner_name }}</td>
+                <td>{{ finding.file_path }}:{{ finding.line_number or 'N/A' }}</td>
+                <td>{{ finding.description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+</html>
